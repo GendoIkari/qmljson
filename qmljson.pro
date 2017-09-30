@@ -4,7 +4,6 @@ QT += qml
 
 TARGET = qmljsonplugin
 DESTDIR = plugins/QmlJson
-DISTFILES = src/qmldir
 
 MOC_DIR = build
 RCC_DIR = build
@@ -17,6 +16,11 @@ SOURCES += \
 HEADERS += \
     src/qmljsonplugin.h \
     src/qmljson.h
+
+DISTFILES += \
+    src/qmldir \
+    README.md \
+    LICENSE
 
 pluginfiles.files += \
     src/qmldir
