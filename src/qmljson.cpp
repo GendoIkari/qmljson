@@ -6,6 +6,12 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
+QmlJson::QmlJson(QObject* parent)
+    : QObject(parent)
+{
+    connect(&_timer, &QTimer::timeout, this, &QmlJson::loadData);
+}
+
 QUrl QmlJson::source()
 {
     return _source;
@@ -19,7 +25,48 @@ void QmlJson::setSource(QUrl source)
     _source = source;
     emit sourceChanged(source);
 
-    auto reply = _manager.get(QNetworkRequest(source));
+    loadData();
+}
+
+QVariant QmlJson::data()
+{
+    return _data;
+}
+
+bool QmlJson::polling()
+{
+    return _timer.isActive();
+}
+
+void QmlJson::setPolling(bool polling)
+{
+    if (_timer.isActive() == polling)
+        return;
+
+    if (polling)
+        _timer.start();
+    else
+        _timer.stop();
+
+    emit pollingChanged(polling);
+}
+
+int QmlJson::interval()
+{
+    return _timer.interval();
+}
+
+void QmlJson::setInterval(int interval)
+{
+    if (_timer.interval() == interval)
+        return;
+    _timer.setInterval(interval);
+    emit intervalChanged(interval);
+}
+
+void QmlJson::loadData()
+{
+    auto reply = _manager.get(QNetworkRequest(_source));
 
     // Update data on success.
     connect(reply, &QNetworkReply::finished, [=]() {
@@ -35,9 +82,4 @@ void QmlJson::setSource(QUrl source)
     connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=](QNetworkReply::NetworkError error) {
         qWarning() << "QmlJson: network error -" << reply->errorString() << error;
     });
-}
-
-QVariant QmlJson::data()
-{
-    return _data;
 }
