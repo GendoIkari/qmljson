@@ -3,7 +3,7 @@ CONFIG += qt plugin c++11
 QT += qml
 
 TARGET = qmljsonplugin
-DESTDIR = plugins/QmlJson
+DESTDIR = plugins/QmlJson/
 
 MOC_DIR = build
 RCC_DIR = build
