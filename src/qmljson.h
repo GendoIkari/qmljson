@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QByteArray>
 #include <QNetworkAccessManager>
 #include <QObject>
 #include <QTimer>
@@ -41,4 +42,5 @@ private:
 
 private slots:
     void loadData();
+    void parseJsonDocument(QByteArray bytes);
 };

@@ -70,16 +70,26 @@ void QmlJson::loadData()
 
     // Update data on success.
     connect(reply, &QNetworkReply::finished, [=]() {
-        QJsonDocument payload = QJsonDocument::fromJson(reply->readAll());
-        if (payload.isArray())
-            _data = payload.array().toVariantList();
-        else
-            _data = payload.object().toVariantMap();
-        emit dataChanged(_data);
+        parseJsonDocument(reply->readAll());
     });
 
     // Network error.
     connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=](QNetworkReply::NetworkError error) {
         qWarning() << "QmlJson: network error -" << reply->errorString() << error;
     });
+}
+
+void QmlJson::parseJsonDocument(QByteArray bytes)
+{
+    QJsonDocument payload = QJsonDocument::fromJson(bytes);
+
+    if (payload.isEmpty() || payload.isNull())
+        qWarning() << "QmlJson: json file has syntax errors";
+
+    if (payload.isArray())
+        _data = payload.array().toVariantList();
+    else
+        _data = payload.object().toVariantMap();
+
+    emit dataChanged(_data);
 }
