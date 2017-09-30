@@ -1,2 +1,2 @@
-# qqmljson
-QQmlJson component for QtQuick applications.
+# QmlJson
+QmlJson component for QtQuick applications.
